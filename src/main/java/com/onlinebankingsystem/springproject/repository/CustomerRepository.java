@@ -7,5 +7,5 @@ import com.onlinebankingsystem.springproject.model.Customer;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
-
+	public Customer findByEmailID(String emailID);
 }

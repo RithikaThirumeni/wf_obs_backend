@@ -19,82 +19,82 @@ public class Account {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="accountNumber", length=10)
-	private long AccountNumber;
+	private long accountNumber;
 	
 	@Column(name="accountType")
-	private String AccountType;
+	private String accountType;
 	
 	@Column(name="accountBalance")
-	private BigDecimal AccountBalance;
+	private BigDecimal accountBalance;
 	
 	@Column(name="openDate")
-	private Date OpenDate;
-	
-	public long getAccountNumber() {
-		return AccountNumber;
-	}
-
-	public void setAccountNumber(long accountNumber) {
-		AccountNumber = accountNumber;
-	}
-
-	public String getAccountType() {
-		return AccountType;
-	}
-
-	public void setAccountType(String accountType) {
-		AccountType = accountType;
-	}
-
-	public BigDecimal getAccountBalance() {
-		return AccountBalance;
-	}
-
-	public void setAccountBalance(BigDecimal accountBalance) {
-		AccountBalance = accountBalance;
-	}
-
-	public Date getOpenDate() {
-		return OpenDate;
-	}
-
-	public void setOpenDate(Date openDate) {
-		OpenDate = openDate;
-	}
-
-	public boolean isDebitCardReq() {
-		return DebitCardReq;
-	}
-
-	public void setDebitCardReq(boolean debitCardReq) {
-		DebitCardReq = debitCardReq;
-	}
-
-	public boolean isCreditCardReq() {
-		return CreditCardReq;
-	}
-
-	public void setCreditCardReq(boolean creditCardReq) {
-		CreditCardReq = creditCardReq;
-	}
-
-	public Customer getCustomerID() {
-		return CustomerID;
-	}
-
-	public void setCustomerID(Customer customerID) {
-		CustomerID = customerID;
-	}
+	private Date openDate;
 
 	@Column(name="debitCardReq")
-	private boolean DebitCardReq;
+	private boolean debitCardReq;
 	
 	@Column(name="creditCardReq")
-	private boolean CreditCardReq;
+	private boolean creditCardReq;
 	
 	@ManyToOne
 	@JoinColumn(name="customerID", referencedColumnName="customerID")
-	private Customer CustomerID;
+	private Customer customerID;
+
+	public long getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(long accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
+	public BigDecimal getAccountBalance() {
+		return accountBalance;
+	}
+
+	public void setAccountBalance(BigDecimal accountBalance) {
+		this.accountBalance = accountBalance;
+	}
+
+	public Date getOpenDate() {
+		return openDate;
+	}
+
+	public void setOpenDate(Date openDate) {
+		this.openDate = openDate;
+	}
+
+	public boolean isDebitCardReq() {
+		return debitCardReq;
+	}
+
+	public void setDebitCardReq(boolean debitCardReq) {
+		this.debitCardReq = debitCardReq;
+	}
+
+	public boolean isCreditCardReq() {
+		return creditCardReq;
+	}
+
+	public void setCreditCardReq(boolean creditCardReq) {
+		this.creditCardReq = creditCardReq;
+	}
+
+	public Customer getCustomerID() {
+		return customerID;
+	}
+
+	public void setCustomerID(Customer customerID) {
+		this.customerID = customerID;
+	}
 	
 	
 	

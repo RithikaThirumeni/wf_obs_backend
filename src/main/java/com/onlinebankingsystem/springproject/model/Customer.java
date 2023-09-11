@@ -18,94 +18,115 @@ public class Customer {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="customerID")
-	private Integer CustomerID;
+	private Integer customerID;
 	
 	@Column(name="firstName", nullable=false)
-	private String FirstName;
+	private String firstName;
 	
 	@Column(name="lastName", nullable=false)
-	private String LastName;
+	private String lastName;
 	
 	@Column(name="phoneNumber", nullable=false)
-	private long PhoneNumber;
+	private long phoneNumber;
 	
 	@Column(name="dateOfBirth", nullable=false)
-	private Date DateOfBirth;	
+	private Date dateOfBirth;	
 	
 	@Column(name="emailID", nullable=false, unique=true)
-	private String EmailID;
+	private String emailID;
 	
 	@Column(name="password", nullable=false, length=10)
-	private String Password;
+	private String password;
 	
 	@Column(name="pin", nullable=false, length=4)
 	private int pin;
 	
 	@Column(name="address")
-	private String ResidentAddress;
+	private String residentAddress;
 	
-	@OneToMany(mappedBy="CustomerID", cascade=CascadeType.ALL)
-	private List<Account> accounts;
-	
-	public List<Account> getAccounts() {
-		return accounts;
+	public Integer getCustomerID() {
+		return customerID;
 	}
-	public void setAccounts(List<Account> accounts) {
-		this.accounts = accounts;
+
+	public void setCustomerID(Integer customerID) {
+		this.customerID = customerID;
 	}
-	public String getPassword() {
-		return Password;
+
+	public String getFirstName() {
+		return firstName;
 	}
-	public String getResidentAddress() {
-		return ResidentAddress;
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
-	public void setResidentAddress(String residentAddress) {
-		ResidentAddress = residentAddress;
+
+	public String getLastName() {
+		return lastName;
 	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public long getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(long phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
 	public Date getDateOfBirth() {
-		return DateOfBirth;
+		return dateOfBirth;
 	}
+
 	public void setDateOfBirth(Date dateOfBirth) {
-		DateOfBirth = dateOfBirth;
+		this.dateOfBirth = dateOfBirth;
 	}
+
+	public String getEmailID() {
+		return emailID;
+	}
+
+	public void setEmailID(String emailID) {
+		this.emailID = emailID;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
 	public void setPassword(String password) {
-		Password = password;
+		this.password = password;
 	}
+
 	public int getPin() {
 		return pin;
 	}
+
 	public void setPin(int pin) {
 		this.pin = pin;
 	}
-	public Integer getCustomerID() {
-		return CustomerID;
+
+	public String getResidentAddress() {
+		return residentAddress;
 	}
-	public void setCustomerID(Integer customerID) {
-		CustomerID = customerID;
+
+	public void setResidentAddress(String residentAddress) {
+		this.residentAddress = residentAddress;
 	}
-	public String getFirstName() {
-		return FirstName;
+
+	public List<Account> getAccounts() {
+		return accounts;
 	}
-	public void setFirstName(String firstName) {
-		FirstName = firstName;
+
+	public void setAccounts(List<Account> accounts) {
+		this.accounts = accounts;
 	}
-	public String getLastName() {
-		return LastName;
-	}
-	public void setLastName(String lastName) {
-		LastName = lastName;
-	}
-	public long getPhoneNumber() {
-		return PhoneNumber;
-	}
-	public void setPhoneNumber(long phoneNumber) {
-		PhoneNumber = phoneNumber;
-	}
-	public String getEmailID() {
-		return EmailID;
-	}
-	public void setEmailID(String emailID) {
-		EmailID = emailID;
-	}
+
+	@OneToMany(mappedBy="customerID", cascade=CascadeType.ALL)
+	private List<Account> accounts;
+	
+	
 
 }

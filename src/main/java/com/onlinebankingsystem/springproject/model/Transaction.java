@@ -2,7 +2,7 @@ package com.onlinebankingsystem.springproject.model;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-//import java.sql.Timestamp;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,74 +21,83 @@ public class Transaction {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="transactionID")
-	private long TransactionID;
+	private long transactionID;
 	
 	@Column(name="transactionType")
-	private String TransactionType;
+	private String transactionType;
 	
 	@Column(name="transactionAmount")
-	private BigDecimal TransactionAmount;
+	private BigDecimal transactionAmount;
 	
 	@Column(name="transactionDate")
-	private Date TransactionDate;
+	private Date transactionDate;
 	
-//	@Column(name="timestamp")
-//	private Timestamp timestamp;
+	@Column(name="timestamp")
+	private Timestamp timestamp;
 	
 	@ManyToOne
 	@JoinColumn(name="sourceAccountNumber", referencedColumnName="accountNumber")
-	private Account SourceAccountNumber;
-	
-	public BigDecimal getTransactionAmount() {
-		return TransactionAmount;
-	}
-
-	public void setTransactionAmount(BigDecimal transactionAmount) {
-		TransactionAmount = transactionAmount;
-	}
-
-	public String getReceiverDescription() {
-		return ReceiverDescription;
-	}
-
-	public void setReceiverDescription(String receiverDescription) {
-		ReceiverDescription = receiverDescription;
-	}
+	private Account sourceAccountNumber;
 
 	@Column(name="receiverDescription")
-	private String ReceiverDescription;
+	private String receiverDescription;
 
 	public long getTransactionID() {
-		return TransactionID;
+		return transactionID;
 	}
 
 	public void setTransactionID(long transactionID) {
-		TransactionID = transactionID;
+		this.transactionID = transactionID;
 	}
 
 	public String getTransactionType() {
-		return TransactionType;
+		return transactionType;
 	}
 
 	public void setTransactionType(String transactionType) {
-		TransactionType = transactionType;
+		this.transactionType = transactionType;
+	}
+
+	public BigDecimal getTransactionAmount() {
+		return transactionAmount;
+	}
+
+	public void setTransactionAmount(BigDecimal transactionAmount) {
+		this.transactionAmount = transactionAmount;
 	}
 
 	public Date getTransactionDate() {
-		return TransactionDate;
+		return transactionDate;
 	}
 
 	public void setTransactionDate(Date transactionDate) {
-		TransactionDate = transactionDate;
+		this.transactionDate = transactionDate;
+	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public Account getSourceAccountNumber() {
-		return SourceAccountNumber;
+		return sourceAccountNumber;
 	}
 
 	public void setSourceAccountNumber(Account sourceAccountNumber) {
-		SourceAccountNumber = sourceAccountNumber;
+		this.sourceAccountNumber = sourceAccountNumber;
 	}
 
+	public String getReceiverDescription() {
+		return receiverDescription;
+	}
+
+	public void setReceiverDescription(String receiverDescription) {
+		this.receiverDescription = receiverDescription;
+	}
+
+	
 	
 }

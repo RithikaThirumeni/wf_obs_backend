@@ -15,5 +15,8 @@ public class CustomerService {
 		Customer obj=customerRepository.save(c);
 		return obj;
 	}
-
+	public Customer findCustomerByEmail(String emailID) {
+		Customer obj = customerRepository.findByEmailID(emailID);
+		return obj;
+	}
 }
