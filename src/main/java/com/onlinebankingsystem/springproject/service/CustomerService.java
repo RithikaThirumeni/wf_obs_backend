@@ -19,4 +19,8 @@ public class CustomerService {
 		Customer obj = customerRepository.findByEmailID(emailID);
 		return obj;
 	}
+	public Customer findCustomerByCustomerID(Integer customerID) {
+		Customer obj = customerRepository.findByCustomerID(customerID);
+		return obj;
+	}
 }

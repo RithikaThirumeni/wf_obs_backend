@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "5c8f1079-aef0-4b42-9364-503f4604d12a",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29614894"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/insert",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\":\"Manny\",\r\n    \"lastName\":\"Debson\",\r\n    \"phoneNumber\":9876543210,\r\n    \"emailID\":\"manny@gmail.com\",\r\n    \"residentAddress\":\"Hyderabad\",\r\n    \"dateOfBirth\":\"2002-06-10\",\r\n    \"password\":\"abc@123\",\r\n    \"pin\":9876\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/insert",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"insert"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "localhost:8080/insert",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\":\"Sherlock\",\r\n    \"lastName\":\"Holmes\",\r\n    \"phoneNumber\":6756765432,\r\n    \"emailID\":\"sherry@gmail.com\",\r\n    \"residentAddress\":\"Berlin\",\r\n    \"dateOfBirth\":\"1986-09-09\",\r\n    \"password\":\"lock@123\",\r\n    \"pin\":8765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/insert",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"insert"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "16"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 11 Sep 2023 03:52:18 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "Save Successful!"
+				}
+			]
+		},
+		{
+			"name": "localhost:8080/display",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/display",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"display"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
