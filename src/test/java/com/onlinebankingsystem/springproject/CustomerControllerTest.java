@@ -2,8 +2,11 @@ package com.onlinebankingsystem.springproject;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -14,10 +17,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.hamcrest.Matchers;
+import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,10 +33,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onlinebankingsystem.springproject.controller.AccountController;
+import com.onlinebankingsystem.springproject.controller.CustomerController;
 import com.onlinebankingsystem.springproject.model.Account;
 import com.onlinebankingsystem.springproject.model.Customer;
 import com.onlinebankingsystem.springproject.repository.AccountRepository;
 import com.onlinebankingsystem.springproject.repository.CustomerRepository;
+import com.onlinebankingsystem.springproject.service.AccountService;
 import com.onlinebankingsystem.springproject.service.CustomerService;
 
 @RunWith(SpringRunner.class)
@@ -40,8 +48,12 @@ public class CustomerControllerTest {
 	@Autowired
 	private MockMvc mvc;
 
+	@InjectMocks
+	private AccountController accountController;
 	@MockBean
 	private CustomerService customerService;
+	@MockBean
+	private AccountService accountService;
 	
 	@MockBean
 	private CustomerRepository customerRepository;
@@ -60,7 +72,7 @@ public class CustomerControllerTest {
 		c.setPassword("cust123");
 		c.setDateOfBirth(Date.valueOf("1995-02-02"));
 		c.setPhoneNumber(1111111111);
-		c.setPassword("abcd");
+		c.setPassword("abcd123");
 		c.setPin(1234);
 		c.setFirstName("John");
 		c.setLastName("Doe");
@@ -72,7 +84,11 @@ public class CustomerControllerTest {
 		credentials.put("password", c.getPassword());
 		String json = mapper.writeValueAsString(credentials);
 		
-		mvc.perform(post("/login").contentType("APPLICATION_JSON_UTF8").content(json)).andExpect(status().isOk());
+		JSONObject jsonobj = new JSONObject(credentials);
+		String jsonstr = jsonobj.toString();
+		
+		mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.content(json)).andExpect(status().isOk());
 	}
 	
 	@Test
@@ -83,16 +99,17 @@ public class CustomerControllerTest {
 		c.setPassword("cust123");
 		c.setDateOfBirth(Date.valueOf("1995-02-02"));
 		c.setPhoneNumber(1111111111);
-		c.setPassword("abcd");
+		c.setPassword("abcd123");
 		c.setPin(1234);
 		c.setFirstName("John");
 		c.setLastName("Doe");
 		Mockito.when(customerService.saveCustomer(ArgumentMatchers.any())).
 		thenReturn(c);
 		String json = mapper.writeValueAsString(c);
-		mvc.perform(post("/insert").
-				contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.content(json).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		mvc.perform(post("/insert").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.content(json)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 
 	}
 	@Test
@@ -103,7 +120,7 @@ public class CustomerControllerTest {
 		c.setPassword("cust123");
 		c.setDateOfBirth(Date.valueOf("1995-02-02"));
 		c.setPhoneNumber(1111111111);
-		c.setPassword("abcd");
+		c.setPassword("abcd123");
 		c.setPin(1234);
 		c.setFirstName("John");
 		c.setLastName("Doe");
@@ -118,14 +135,16 @@ public class CustomerControllerTest {
 		a.setCustomerID(c);
 		
 		String json = mapper.writeValueAsString(a);
-		
+		List<Account> accList = new ArrayList<>();
+		accList.add(a);
+		c.setAccounts(accList);
 		
 		Mockito.when(customerService.findCustomerByCustomerID(ArgumentMatchers.anyInt())).thenReturn(c);
-		mvc.perform(get("display/{id}",1)
+		mvc.perform(get("/display/{id}",1)
 		      .contentType(MediaType.APPLICATION_JSON))
 		      .andExpect(status().isOk())
 		      .andExpect(jsonPath("$", Matchers.hasSize(1)))
-		      .andExpect(jsonPath("$[0].accountNumber", Matchers.equalTo(a.getAccountNumber())));
+		      .andExpect(jsonPath("$[0].accountNumber", Matchers.equalTo(1)));
 	
 	}
 }
