@@ -1,6 +1,5 @@
 package com.onlinebankingsystem.springproject.controller;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.onlinebankingsystem.springproject.model.Account;
 import com.onlinebankingsystem.springproject.model.Customer;
-import com.onlinebankingsystem.springproject.repository.CustomerRepository;
 import com.onlinebankingsystem.springproject.service.CustomerService;
 
 @RestController
@@ -32,24 +29,32 @@ public class CustomerController {
 	CustomerService customerService;
 	
 	
-	@GetMapping("/display/{cid}")
-	public List<Account> displayAccounts(@PathVariable("cid")Integer cid) {
+	@GetMapping("/customeraccounts/{cid}")
+	public List<Account> displayAccounts(@PathVariable("cid")Long cid) {
 		List<Account> alist;
 		alist = customerService.findCustomerByCustomerID(cid).getAccounts();
 		return alist;
 	}
 	
-	@PostMapping("/insert")
-	public String insertCustomer(@RequestBody @Valid Customer c) {
-		try {
-			Customer obj = customerService.saveCustomer(c);
-			if (obj!=null) {
-				return "Save Successful!";
-			}
-			else return "Insert Table Failed!";
-		}catch(Exception e) {
-			return e.toString();
+	@PostMapping("/savecustomer")
+	public ResponseEntity<Object> insertCustomer(@RequestBody @Valid Customer c) {
+		HttpStatus httpresult = HttpStatus.OK;
+		String responseText;
+		HashMap<String,Object> result = new HashMap<>();
+		
+		Customer obj = customerService.saveCustomer(c);
+		if (obj!=null) {
+			responseText = "Save Successful!";
+			httpresult=HttpStatus.CREATED;
 		}
+		else {
+			responseText = "Insert Table Failed!";
+			httpresult=HttpStatus.FORBIDDEN;
+		}
+		
+		result.put("obj", obj);
+		result.put("responseText", responseText);
+		return new ResponseEntity<>(result, httpresult);
 	}
 	@PostMapping("/login")
 	public ResponseEntity<Object> loginCustomer(@RequestBody Map<String,Object> credentials){

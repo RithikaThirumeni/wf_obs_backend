@@ -1,6 +1,7 @@
 package com.onlinebankingsystem.springproject.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,17 +37,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(responseBody, headers, status);
 	}
 
-//	@ExceptionHandler(value = ResourceNotFoundException.class)
-//	//@ResponseStatus(HttpStatus.NOT_FOUND)
-//	public @ResponseBody ErrorResponse handleResoureNotFoundException(ResourceNotFoundException ex) {
-//		return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-//	}
-//	
-//	@ExceptionHandler(value = NoDataFoundException.class)
-//	@ResponseStatus(HttpStatus.NOT_FOUND)
-//	public @ResponseBody ErrorResponse handleNoDataFoundException(NoDataFoundException ex) {
-//		return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-//	}
+	@ExceptionHandler(value = Exception.class)
+	public @ResponseBody ResponseEntity<Object> handleResoureNotFoundException(Exception ex) {
+		
+		HashMap<String,Object> result = new HashMap<>();
+		String responseText=ex.getMessage();
+		
+		
+		result.put("responseText", responseText);
+		return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
+	}
+
 	
 
 }

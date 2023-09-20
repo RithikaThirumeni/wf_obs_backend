@@ -19,7 +19,7 @@ public class CustomerService {
 		Customer obj = customerRepository.findByEmailID(emailID);
 		return obj;
 	}
-	public Customer findCustomerByCustomerID(Integer customerID) {
+	public Customer findCustomerByCustomerID(Long customerID) {
 		Customer obj = customerRepository.findByCustomerID(customerID);
 		return obj;
 	}

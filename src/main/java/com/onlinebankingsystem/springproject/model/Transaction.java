@@ -1,17 +1,20 @@
 package com.onlinebankingsystem.springproject.model;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 @Entity
@@ -19,15 +22,19 @@ import javax.persistence.Table;
 public class Transaction {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(generator="random8DigitIDGenerator")
+	@GenericGenerator(name="random8DigitIDGenerator", strategy = "com.onlinebankingsystem.springproject.util.Random8DigitIDGenerator")
 	@Column(name="transactionID")
 	private long transactionID;
 	
 	@Column(name="transactionType")
+	@Pattern(regexp="withdraw|deposit|transfer")
 	private String transactionType;
 	
+	@DecimalMin(value="0.0", inclusive=true)
+	@Digits(integer=10, fraction=2)
 	@Column(name="transactionAmount")
-	private BigDecimal transactionAmount;
+	private double transactionAmount;
 	
 	@Column(name="transactionDate")
 	private Date transactionDate;
@@ -38,9 +45,10 @@ public class Transaction {
 	@ManyToOne
 	@JoinColumn(name="sourceAccountNumber", referencedColumnName="accountNumber")
 	private Account sourceAccountNumber;
-
-	@Column(name="receiverDescription")
-	private String receiverDescription;
+	
+	@ManyToOne
+	@JoinColumn(name="receiverAccountNumber", referencedColumnName="accountNumber")
+	private Account receiverAccountNumber;
 
 	public long getTransactionID() {
 		return transactionID;
@@ -58,11 +66,11 @@ public class Transaction {
 		this.transactionType = transactionType;
 	}
 
-	public BigDecimal getTransactionAmount() {
+	public double getTransactionAmount() {
 		return transactionAmount;
 	}
 
-	public void setTransactionAmount(BigDecimal transactionAmount) {
+	public void setTransactionAmount(double transactionAmount) {
 		this.transactionAmount = transactionAmount;
 	}
 
@@ -90,13 +98,15 @@ public class Transaction {
 		this.sourceAccountNumber = sourceAccountNumber;
 	}
 
-	public String getReceiverDescription() {
-		return receiverDescription;
+	public Account getReceiverAccountNumber() {
+		return receiverAccountNumber;
 	}
 
-	public void setReceiverDescription(String receiverDescription) {
-		this.receiverDescription = receiverDescription;
+	public void setReceiverAccountNumber(Account receiverAccountNumber) {
+		this.receiverAccountNumber = receiverAccountNumber;
 	}
+
+	
 
 	
 	

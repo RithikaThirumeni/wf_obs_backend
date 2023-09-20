@@ -85,7 +85,7 @@ public class AccountControllerTest {
 		c.setLastName("Doe");
 		
 		Account a = new Account();
-		a.setAccountBalance(new BigDecimal(0.0));
+		a.setAccountBalance(0.0);
 		a.setAccountNumber(1);
 		a.setAccountType("savings");
 		a.setCreditCardReq(false);

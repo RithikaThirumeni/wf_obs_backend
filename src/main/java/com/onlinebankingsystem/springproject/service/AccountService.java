@@ -19,4 +19,29 @@ public class AccountService {
 		Account obj = accountRepository.findByAccountNumber(accountNumber);
 		return obj;
 	}
+	public int existsAccountByAccountNumber(long accountNumber) {
+		Account obj = accountRepository.findByAccountNumber(accountNumber);
+		if(obj!=null) return 1;
+		else return 0;
+	}
+	public int withdrawFromAccount(double amount, long accountNumber) {
+		if(amount>accountRepository.findByAccountNumber(accountNumber).getAccountBalance()) {
+			return 0;
+		}
+		int res = accountRepository.withdraw(amount, accountNumber);
+		return res;
+	}
+	public int depositIntoAccount(double amount, long accountNumber) {
+		int res = accountRepository.deposit(amount, accountNumber);
+		return res;
+	}
+	public int fundTransfer(double amount, long sourceAccountNumber, long receiverAccountNumber) {
+		if(amount>accountRepository.findByAccountNumber(sourceAccountNumber).getAccountBalance()) {
+			return 0;
+		}
+		accountRepository.withdraw(amount, sourceAccountNumber);
+		int res = accountRepository.deposit(amount, receiverAccountNumber);
+		return res;
+		
+	}
 }

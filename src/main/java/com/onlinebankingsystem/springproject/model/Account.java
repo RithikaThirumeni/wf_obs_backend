@@ -1,15 +1,17 @@
 package com.onlinebankingsystem.springproject.model;
 
-import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -17,28 +19,30 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="account")
 public class Account {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="accountNumber", length=10)
+	@GeneratedValue(generator="custom-random-id")
+	@GenericGenerator(name="custom-random-id", strategy = "com.onlinebankingsystem.springproject.util.Random8DigitIDGenerator")
+	@Column(name="accountNumber")
 	@Digits(integer=8, fraction=0)
 	private long accountNumber;
 	
 	@NotBlank(message="Account type cannot be blank")
-	@Pattern(regexp="savings|fixed-deposit")
+	@Pattern(regexp="Savings|Salary|Current")
 	@Column(name="accountType")
 	private String accountType;
 	
 	@DecimalMin(value="0.0", inclusive=true)
 	@Digits(integer=10, fraction=2)
 	@Column(name="accountBalance")
-	private BigDecimal accountBalance;
+	private double accountBalance;
 	
 	@FutureOrPresent(message="open date is not valid")
 	@Column(name="openDate")
@@ -54,6 +58,13 @@ public class Account {
 	@JsonBackReference
 	@JoinColumn(name="customerID", referencedColumnName="customerID")
 	private Customer customerID;
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+	@OneToMany(mappedBy="sourceAccountNumber", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	private List<Transaction> transactions;
 
 	public long getAccountNumber() {
 		return accountNumber;
@@ -71,11 +82,11 @@ public class Account {
 		this.accountType = accountType;
 	}
 
-	public BigDecimal getAccountBalance() {
+	public double getAccountBalance() {
 		return accountBalance;
 	}
 
-	public void setAccountBalance(BigDecimal accountBalance) {
+	public void setAccountBalance(double accountBalance) {
 		this.accountBalance = accountBalance;
 	}
 

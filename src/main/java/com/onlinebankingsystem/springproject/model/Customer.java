@@ -2,18 +2,16 @@ package com.onlinebankingsystem.springproject.model;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 
 import java.sql.Date;
@@ -26,10 +24,11 @@ import javax.persistence.Column;
 @Table(name="customer")
 public class Customer {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(generator="custom-random-id")
+	@GenericGenerator(name="custom-random-id", strategy = "com.onlinebankingsystem.springproject.util.Random4DigitIDGenerator")
 	@Column(name="customerID")
-	@Digits(integer=8, fraction=0)
-	private Integer customerID;
+	@Digits(integer=4, fraction=0)
+	private Long customerID;
 	
 	@NotBlank(message="Name connot be blank")
 	@Column(name="firstName", nullable=false)
@@ -65,17 +64,17 @@ public class Customer {
 	
 	@OneToMany(mappedBy="customerID", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private List<Account> accounts;
-	
-	public Integer getCustomerID() {
-		return customerID;
-	}
-
-	public void setCustomerID(Integer customerID) {
-		this.customerID = customerID;
-	}
 
 	public String getFirstName() {
 		return firstName;
+	}
+
+	public Long getCustomerID() {
+		return customerID;
+	}
+
+	public void setCustomerID(Long customerID) {
+		this.customerID = customerID;
 	}
 
 	public void setFirstName(String firstName) {
