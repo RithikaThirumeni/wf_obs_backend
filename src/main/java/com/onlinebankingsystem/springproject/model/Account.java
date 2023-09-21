@@ -58,6 +58,17 @@ public class Account {
 	@JsonBackReference
 	@JoinColumn(name="customerID", referencedColumnName="customerID")
 	private Customer customerID;
+	
+	@Column(nullable = false)
+    private boolean activeStatus;
+
+	public boolean isActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
 
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;

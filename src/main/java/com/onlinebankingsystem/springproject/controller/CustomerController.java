@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinebankingsystem.springproject.model.Account;
@@ -30,11 +32,27 @@ public class CustomerController {
 	
 	
 	@GetMapping("/customeraccounts/{cid}")
-	public List<Account> displayAccounts(@PathVariable("cid")Long cid) {
+	public ResponseEntity<Object> displayAccounts(@PathVariable("cid")Long cid) {
 		List<Account> alist;
+		HttpStatus httpresult = HttpStatus.OK;
+		String responseText;
+		HashMap<String,Object> result = new HashMap<>();
 		alist = customerService.findCustomerByCustomerID(cid).getAccounts();
-		return alist;
+		responseText="accounts list by cid";
+		result.put("obj", alist);
+		result.put("responseText", responseText);
+		return new ResponseEntity<>(result, httpresult);
+	
 	}
+	@GetMapping("/getAllCustomers")
+    public ResponseEntity<Object> getAllCustomers(@RequestParam(required = false) Long id) throws Exception {
+        return customerService.getAllCustomers(id);
+    }
+	
+	@PutMapping("/updateCustomer/{id}")
+    public ResponseEntity<Object> updateCustomer(@PathVariable(value = "id") Long id, @RequestBody Customer customer) throws Exception {
+        return customerService.updateCustomer(id, customer);
+    }
 	
 	@PostMapping("/savecustomer")
 	public ResponseEntity<Object> insertCustomer(@RequestBody @Valid Customer c) {

@@ -110,8 +110,8 @@ public class AccountController {
 	@PostMapping("/deposit")
 	public ResponseEntity<Object> depositTransaction(@RequestBody Map<String,Object> depositDetails) {
 		double amount = (double) depositDetails.get("amount");
-		int accountNumber = (int) depositDetails.get("accountNumber");
-	
+		long accountNumber = (long) depositDetails.get("accountNumber");
+		
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
@@ -143,6 +143,7 @@ public class AccountController {
 	@PostMapping("/fundtransfer")
 	public ResponseEntity<Object> findTransfer(@RequestBody Map<String,Object> transferDetails) {
 		double amount = (double) transferDetails.get("amount");
+//		double amount = Double.parseDouble(d) ;
 		int sourceAccountNumber = (int) transferDetails.get("sourceAccountNumber");
 		int receiverAccountNumber = (int) transferDetails.get("receiverAccountNumber");
 	

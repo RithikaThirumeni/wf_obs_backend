@@ -38,6 +38,12 @@ public class TransactionController {
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
 		Account srcaccount = accountService.findAccountByAccountNumber(srcaccno);
+		if (srcaccount==null) {
+			responseText = "Account Not Found";
+			result.put("obj", 0);			
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
 		List<Transaction> translist = transactionService.findAllTransactionsByAccountNumber(srcaccount);
 		result.put("obj", translist);
 		responseText="sucessfully retrieved balance";
@@ -53,10 +59,15 @@ public class TransactionController {
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
 		Account sourceAccount = accountService.findAccountByAccountNumber(sourceAccountNumber);
+		if (sourceAccount==null) {
+			responseText = "Account Not Found";
+			result.put("obj", 0);			
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
 		List<Transaction> translist = transactionService.findTransactionStatementByAccount(sourceAccount, Date.valueOf(startDate), Date.valueOf(endDate));
 		result.put("obj", translist);
 		responseText="sucessfully retrieved statement";
-		
 		result.put("responseText", responseText);
 		return new ResponseEntity<>(result, httpresult);
 	}
@@ -66,6 +77,12 @@ public class TransactionController {
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
 		Account sourceAccount = accountService.findAccountByAccountNumber(sourceAccountNumber);
+		if (sourceAccount==null) {
+			responseText = "Account Not Found";
+			result.put("obj", null);			
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
 		List<Transaction> translist = transactionService.findTransactionSummaryByAccount(sourceAccount)
 				.stream().limit(5).collect(Collectors.toList());
 		result.put("obj", translist);

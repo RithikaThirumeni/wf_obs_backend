@@ -64,6 +64,17 @@ public class Customer {
 	
 	@OneToMany(mappedBy="customerID", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private List<Account> accounts;
+	
+	@Column(nullable = false)
+    private boolean activeStatus;
+
+	public boolean isActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
 
 	public String getFirstName() {
 		return firstName;
