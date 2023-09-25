@@ -44,7 +44,6 @@ public class Account {
 	@Column(name="accountBalance")
 	private double accountBalance;
 	
-	@FutureOrPresent(message="open date is not valid")
 	@Column(name="openDate")
 	private Date openDate;
 

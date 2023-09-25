@@ -74,12 +74,20 @@ public class AdminService{
         Customer customer = customerRepository.findByCustomerID(id);
         if(customer == null) {
             res.put("responseText","No such customer exists.");
-            httpres = HttpStatus.BAD_REQUEST;
+            res.put("obj", 0);
+            httpres = HttpStatus.OK;
         }
         else {
-            customer.setActiveStatus(true);
+        	if (customer.isActiveStatus()==true) {
+        		customer.setActiveStatus(false);
+        		responseText="Customer Disabled.";
+        	}
+        	else {
+        		customer.setActiveStatus(true);
+        		responseText="Customer Enabled.";
+        	}
             Customer newCustomer = customerRepository.save(customer);
-            responseText="Customer Account Enabled.";
+            
             res.put("obj",newCustomer);
             res.put("responseText",responseText);
         }
@@ -93,12 +101,19 @@ public class AdminService{
         Account account = accountRepository.findByAccountNumber(ano);
         if(account == null) {
             res.put("responseText","No such account exists.");
-            httpres = HttpStatus.BAD_REQUEST;
+            res.put("obj", 0);
+            httpres = HttpStatus.OK;
         }
         else {
-            account.setActiveStatus(true);
+        	if (account.isActiveStatus()==true) {
+        		account.setActiveStatus(false);
+        		responseText="Account Disabled.";
+        	}
+        	else {
+        		account.setActiveStatus(true);
+        		responseText="Account Enabled.";
+        	}
             Account newAccount = accountRepository.save(account);
-            responseText="Customer Account Enabled.";
             res.put("obj",newAccount);
             res.put("responseText",responseText);
         }

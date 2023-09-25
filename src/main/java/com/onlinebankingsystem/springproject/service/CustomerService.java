@@ -34,16 +34,22 @@ public class CustomerService {
         HttpStatus httpresult = HttpStatus.OK;
 		HashMap<String,Object> result = new HashMap<>();
 		
-        if(id == null)
+        if(id == null) {
+        	result.put("responseText", "null id, get all");
             customerRepository.findAll().forEach(customers::add);
-        else
-            customers.add(customerRepository.findByCustomerID(id));
-
-        if(customers.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        else {
+        	Customer n = findCustomerByCustomerID(id);
+        	if (n==null) {
+        		result.put("responseText", "user not found");
+        	}
+        	else {
+        		customers.add(n);
+                result.put("responseText", "success");
+        	}
         }
         result.put("obj", customers);
-        result.put("responseText", "success");
+        
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 	

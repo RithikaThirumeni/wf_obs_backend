@@ -46,7 +46,7 @@ public class CustomerController {
 	}
 	@GetMapping("/getAllCustomers")
     public ResponseEntity<Object> getAllCustomers(@RequestParam(required = false) Long id) throws Exception {
-        return customerService.getAllCustomers(id);
+		return customerService.getAllCustomers(id);
     }
 	
 	@PutMapping("/updateCustomer/{id}")

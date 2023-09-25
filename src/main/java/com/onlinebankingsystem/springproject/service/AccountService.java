@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.onlinebankingsystem.springproject.model.Account;
 import com.onlinebankingsystem.springproject.repository.AccountRepository;
+import com.onlinebankingsystem.springproject.repository.CustomerRepository;
 
 @Service
 public class AccountService {
