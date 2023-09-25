@@ -46,11 +46,13 @@ public class AdminService{
         Admin admin = adminRepository.findByEmailID(email);
         if(admin == null){
             responseText = "Such an admin doesn't exist in our records.";
-            httpres = HttpStatus.NOT_FOUND;
+            res.put("obj",0);
+            httpres = HttpStatus.OK;
         }
         else if(admin.getEmailID().equals(email) && !admin.getPassword().equals(pwd)) {
             responseText = "Incorrect Password";
-            httpres = HttpStatus.UNAUTHORIZED;
+            res.put("obj",0);
+            httpres = HttpStatus.OK;
         }
         else {
             responseText = "Login Successful";

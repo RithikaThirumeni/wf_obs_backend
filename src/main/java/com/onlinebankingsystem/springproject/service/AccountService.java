@@ -28,14 +28,23 @@ public class AccountService {
 		if(amount>accountRepository.findByAccountNumber(accountNumber).getAccountBalance()) {
 			return 0;
 		}
+		if(!accountRepository.findByAccountNumber(accountNumber).isActiveStatus()) {
+			return 999;
+		}
 		int res = accountRepository.withdraw(amount, accountNumber);
 		return res;
 	}
 	public int depositIntoAccount(double amount, long accountNumber) {
+		if(accountRepository.findByAccountNumber(accountNumber).isActiveStatus()==false) {
+			return 999;
+		}
 		int res = accountRepository.deposit(amount, accountNumber);
 		return res;
 	}
 	public int fundTransfer(double amount, long sourceAccountNumber, long receiverAccountNumber) {
+		if(!accountRepository.findByAccountNumber(sourceAccountNumber).isActiveStatus()) {
+			return 999;
+		}
 		if(amount>accountRepository.findByAccountNumber(sourceAccountNumber).getAccountBalance()) {
 			return 0;
 		}

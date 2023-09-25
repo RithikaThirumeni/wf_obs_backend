@@ -82,9 +82,13 @@ public class AccountController {
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
-
+		
 		int res= accountService.withdrawFromAccount(amount, accountNumber);
-		if (res==0) {
+		if(res==999) {
+			responseText = "Account is Disabled";
+			httpresult=HttpStatus.OK;
+		}
+		else if (res==0) {
 			responseText = "Insufficent Balance, failed to withdraw";
 			httpresult=HttpStatus.OK;
 		}
@@ -110,13 +114,17 @@ public class AccountController {
 	@PostMapping("/deposit")
 	public ResponseEntity<Object> depositTransaction(@RequestBody Map<String,Object> depositDetails) {
 		double amount = (double) depositDetails.get("amount");
-		long accountNumber = (long) depositDetails.get("accountNumber");
+		int accountNumber = (int) depositDetails.get("accountNumber");
 		
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
 		int res= accountService.depositIntoAccount(amount, accountNumber);
-		if (res!=1) {
+		if(res==999) {
+			responseText = "Account is Disabled";
+			httpresult=HttpStatus.OK;
+		}
+		else if (res==0) {
 			responseText = "Update failed";
 			httpresult=HttpStatus.OK;
 		}
@@ -151,7 +159,11 @@ public class AccountController {
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
 		int res= accountService.fundTransfer(amount, sourceAccountNumber, receiverAccountNumber);
-		if (res==0) {
+		if(res==999) {
+			responseText = "Source Account is Disabled";
+			httpresult=HttpStatus.OK;
+		}
+		else if (res==0) {
 			responseText = "Transfer Failed, check balance and account number";
 			httpresult=HttpStatus.OK;
 		}

@@ -67,7 +67,7 @@ public class CustomerControllerTest {
 	public void testLoginCustomer() throws Exception{
 		
 		Customer c = new Customer();
-		c.setCustomerID(1);
+		c.setCustomerID((long)1);
 		c.setEmailID("cust@gmail.com");
 		c.setPassword("cust123");
 		c.setDateOfBirth(Date.valueOf("1995-02-02"));
@@ -94,7 +94,7 @@ public class CustomerControllerTest {
 	@Test
 	public void testInsertCustomer() throws Exception {
 		Customer c = new Customer();
-		c.setCustomerID(1);
+		c.setCustomerID((long)1);
 		c.setEmailID("cust@gmail.com");
 		c.setPassword("cust123");
 		c.setDateOfBirth(Date.valueOf("1995-02-02"));
@@ -115,7 +115,7 @@ public class CustomerControllerTest {
 	@Test
 	public void testDisplayAccounts() throws Exception {
 		Customer c = new Customer();
-		c.setCustomerID(1);
+		c.setCustomerID((long)1);
 		c.setEmailID("cust@gmail.com");
 		c.setPassword("cust123");
 		c.setDateOfBirth(Date.valueOf("1995-02-02"));
@@ -139,7 +139,7 @@ public class CustomerControllerTest {
 		accList.add(a);
 		c.setAccounts(accList);
 		
-		Mockito.when(customerService.findCustomerByCustomerID(ArgumentMatchers.anyInt())).thenReturn(c);
+		Mockito.when(customerService.findCustomerByCustomerID(ArgumentMatchers.anyLong())).thenReturn(c);
 		mvc.perform(get("/display/{id}",1)
 		      .contentType(MediaType.APPLICATION_JSON))
 		      .andExpect(status().isOk())

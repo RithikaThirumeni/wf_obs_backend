@@ -50,8 +50,12 @@ public class CustomerController {
     }
 	
 	@PutMapping("/updateCustomer/{id}")
-    public ResponseEntity<Object> updateCustomer(@PathVariable(value = "id") Long id, @RequestBody Customer customer) throws Exception {
+    public ResponseEntity<Object> updateCustomer(@PathVariable(value = "id") Long id, @RequestBody @Valid Customer customer) throws Exception {
         return customerService.updateCustomer(id, customer);
+    }
+	@PostMapping("/resetPassword")
+    public ResponseEntity<Object> resetPassword(@RequestBody HashMap<String,Object> newDetails) throws Exception {
+        return customerService.resetPassword(newDetails);
     }
 	
 	@PostMapping("/savecustomer")

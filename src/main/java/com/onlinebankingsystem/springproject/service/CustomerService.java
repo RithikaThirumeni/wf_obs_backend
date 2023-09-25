@@ -48,9 +48,12 @@ public class CustomerService {
     }
 	
 	public ResponseEntity<Object> updateCustomer(Long id, Customer customer) throws Exception {
+		HashMap<String,Object> result = new HashMap<>();
         Customer foundCustomer = customerRepository.findByCustomerID(id);
         if(foundCustomer == null) {
-            return new ResponseEntity<>("Such a Customer does not exist in our records.", HttpStatus.BAD_REQUEST);
+        	result.put("responseText", "Such a Customer does not exist in our records.");
+        	result.put("obj", 0);
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
         foundCustomer.setFirstName(customer.getFirstName());
         foundCustomer.setLastName(customer.getLastName());
@@ -60,7 +63,26 @@ public class CustomerService {
         foundCustomer.setPin(customer.getPin());
         foundCustomer.setDateOfBirth(customer.getDateOfBirth());
         foundCustomer.setResidentAddress(customer.getResidentAddress());
-
-        return new ResponseEntity<>(customerRepository.save(foundCustomer),HttpStatus.OK);
+        result.put("obj", customerRepository.save(foundCustomer));
+        result.put("responseText", "Updated Customer");
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+	public ResponseEntity<Object> resetPassword( HashMap<String,Object> newDetails) throws Exception {
+		HashMap<String,Object> result = new HashMap<>();
+        Customer customer = customerRepository.findByEmailID(newDetails.get("emailID").toString());
+        Long otp = Long.parseLong(newDetails.get("otp").toString());
+        String password = newDetails.get("password").toString();
+        if(otp == 1234) {
+            customer.setPassword(password);
+            customerRepository.save(customer);
+            result.put("obj", password);
+            result.put("responseText", "Password Updated!");
+            
+        }
+        else {
+        	result.put("responseText", "Entered the wrong OTP, password not updated");
+        	result.put("obj", password);
+        }
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
 }

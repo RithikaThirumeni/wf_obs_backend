@@ -29,4 +29,8 @@ public class TransactionService {
 	public List<Transaction> findTransactionSummaryByAccount(Account sourceAccountNumber){
 		return transactionRepository.findLatestByAccountNumber(sourceAccountNumber);
 	}
+	public List<Transaction> findTransactionSummaryByCustomerID(Long customerID){
+		return transactionRepository.findRecentTransactions(customerID);
+	}
+	
 }

@@ -91,20 +91,20 @@ public class TransactionController {
 		result.put("responseText", responseText);
 		return new ResponseEntity<>(result, httpresult);
 	}
-//	@GetMapping("/transactionsummary/{customerID}")
-//	public ResponseEntity<Object> transactionSummary(@PathVariable(value="customerID")Long customerID) {
-//		HttpStatus httpresult = HttpStatus.OK;
-//		String responseText;
-//		HashMap<String,Object> result = new HashMap<>();
-//		Account sourceAccount = accountService.findAccountByAccountNumber(sourceAccountNumber);
-//		List<Transaction> translist = transactionService.findTransactionSummaryByAccount(sourceAccount)
-//				.stream().limit(5).collect(Collectors.toList());
-//		result.put("obj", translist);
-//		responseText="sucessfully retrieved summary";
-//		
-//		result.put("responseText", responseText);
-//		return new ResponseEntity<>(result, httpresult);
-//	} 
+	@GetMapping("/transactionsummary/{customerID}")
+	public ResponseEntity<Object> transactionSummary(@PathVariable(value="customerID")Long customerID) {
+		HttpStatus httpresult = HttpStatus.OK;
+		String responseText;
+		HashMap<String,Object> result = new HashMap<>();
+		List<Transaction> translist = transactionService.findTransactionSummaryByCustomerID(customerID)
+				.stream().limit(5).collect(Collectors.toList());
+				
+		result.put("obj", translist);
+		responseText="sucessfully retrieved transaction summary";
+		
+		result.put("responseText", responseText);
+		return new ResponseEntity<>(result, httpresult);
+	} 
 	
 	
 		

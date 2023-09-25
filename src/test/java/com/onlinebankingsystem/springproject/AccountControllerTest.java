@@ -74,7 +74,7 @@ public class AccountControllerTest {
 	@Test
 	public void testCreateAccount() throws Exception {
 		Customer c = new Customer();
-		c.setCustomerID(1);
+		c.setCustomerID((long)1);
 		c.setEmailID("cust@gmail.com");
 		c.setPassword("cust123");
 		c.setDateOfBirth(Date.valueOf("1995-02-02"));
