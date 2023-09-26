@@ -96,8 +96,8 @@ public class TransactionController {
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
-		List<Transaction> translist = transactionService.findTransactionSummaryByCustomerID(customerID)
-				.stream().limit(5).collect(Collectors.toList());
+		List<Transaction> translist = transactionService.findTransactionSummaryByCustomerID(customerID);
+//				.stream().limit(5).collect(Collectors.toList());
 				
 		result.put("obj", translist);
 		responseText="sucessfully retrieved transaction summary";

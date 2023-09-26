@@ -41,7 +41,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	public @ResponseBody ResponseEntity<Object> handleResoureNotFoundException(Exception ex) {
 		
 		HashMap<String,Object> result = new HashMap<>();
-		String responseText=ex.getMessage();
+		String responseText=ex.getMessage()+ex.getStackTrace();
 		
 		
 		result.put("responseText", responseText);

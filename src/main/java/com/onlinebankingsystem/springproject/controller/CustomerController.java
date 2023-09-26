@@ -42,7 +42,6 @@ public class CustomerController {
 		result.put("obj", alist);
 		result.put("responseText", responseText);
 		return new ResponseEntity<>(result, httpresult);
-	
 	}
 	@GetMapping("/getAllCustomers")
     public ResponseEntity<Object> getAllCustomers(@RequestParam(required = false) Long id) throws Exception {
@@ -53,11 +52,16 @@ public class CustomerController {
     public ResponseEntity<Object> updateCustomer(@PathVariable(value = "id") Long id, @RequestBody @Valid Customer customer) throws Exception {
         return customerService.updateCustomer(id, customer);
     }
-	@PostMapping("/resetPassword")
+	@PutMapping("/resetPassword")
     public ResponseEntity<Object> resetPassword(@RequestBody HashMap<String,Object> newDetails) throws Exception {
         return customerService.resetPassword(newDetails);
     }
 	
+	@GetMapping("/hello")
+	public String getMessage()
+	{
+		return "hello";
+	}
 	@PostMapping("/savecustomer")
 	public ResponseEntity<Object> insertCustomer(@RequestBody @Valid Customer c) {
 		HttpStatus httpresult = HttpStatus.OK;
