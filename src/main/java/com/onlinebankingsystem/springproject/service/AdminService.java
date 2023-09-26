@@ -12,6 +12,7 @@ import com.onlinebankingsystem.springproject.repository.AccountRepository;
 import com.onlinebankingsystem.springproject.repository.AdminRepository;
 import com.onlinebankingsystem.springproject.repository.CustomerRepository;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,6 +36,23 @@ public class AdminService{
         res.put("responseText","Admin added");
         res.put("obj", newAdmin);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
+    }
+    public ResponseEntity<Object> createAccountForUser(HashMap<String,Object> details) throws Exception {
+    	Customer c = new Customer();
+    	c=customerRepository.findByCustomerID((long)details.get("customerID"));
+    	Account a = new Account();
+    	a.setCustomerID(c);
+    	a.setAccountBalance((double)details.get("accountBalance"));
+    	a.setAccountType((String)details.get("accountType"));
+    	a.setActiveStatus(false);
+    	a.setCreditCardReq((boolean)details.get("creditCardReq"));
+    	a.setDebitCardReq((boolean)details.get("debitCardReq"));
+    	a.setOpenDate(Date.valueOf((String)details.get("openDate")));
+    	accountRepository.save(a);
+    	HashMap<String,Object> res = new HashMap<>();
+    	res.put("obj", a);
+    	res.put("responseText", "created new account");
+    	return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     public ResponseEntity<Object> loginAdmin(HashMap<String,Object> credentials) throws Exception {

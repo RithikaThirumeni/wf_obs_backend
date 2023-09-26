@@ -27,6 +27,10 @@ public class AdminController {
     public ResponseEntity<Object> loginAdmin(@RequestBody HashMap<String,Object> credentials) throws Exception {
         return adminService.loginAdmin(credentials);
     }
+    @PostMapping("/createaccountforuser")
+    public ResponseEntity<Object> createAccountForUser(@RequestBody HashMap<String,Object> details) throws Exception {
+    	return adminService.createAccountForUser(details);
+    }
 
     @GetMapping("/getUnverifiedCustomers")
     public ResponseEntity<Object> getUnverifiedCustomers() throws Exception {
