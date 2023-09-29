@@ -1,6 +1,7 @@
 package com.onlinebankingsystem.springproject.controller;
 
 import java.sql.Date;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.onlinebankingsystem.springproject.model.Account;
 import com.onlinebankingsystem.springproject.model.Transaction;
 import com.onlinebankingsystem.springproject.service.AccountService;
-import com.onlinebankingsystem.springproject.service.TransactionService;
+import com.onlinebankingsystem.springproject.service.TransactionServiceImpl;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -32,7 +33,7 @@ public class AccountController {
 	AccountService accountService;
 	
 	@Autowired
-	TransactionService transactionService;
+	TransactionServiceImpl transactionService;
 	
 	@PostMapping("/createaccount")
 	public ResponseEntity<Object> createAccount(@RequestBody @Valid Account a) {
@@ -53,12 +54,19 @@ public class AccountController {
 		return new ResponseEntity<>(result, httpresult);
 	}
 	
-	@GetMapping("/displaybalance/{accno}")
-	public ResponseEntity<Object> displayAccountBalance(@PathVariable("accno")long accno) {
+	@GetMapping("/displaybalance/{accno}/{cid}")
+	public ResponseEntity<Object> displayAccountBalance(@PathVariable("accno")long accno, @PathVariable("cid")long cid) {
 		double balance;
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
+		if(accountService.findAccountByAccountNumber(accno).getCustomerID().getCustomerID()!=cid) {
+			responseText = "Account cannot be accessed by "+cid+". Not the owner.";
+			httpresult=HttpStatus.OK;
+			result.put("obj", 0);
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
 		if(accountService.existsAccountByAccountNumber(accno)==1) {
 			balance = accountService.findAccountByAccountNumber(accno).getAccountBalance();
 			result.put("obj", balance);
@@ -74,8 +82,8 @@ public class AccountController {
 		return new ResponseEntity<>(result, httpresult);
 	}
 	
-	@PostMapping("/withdraw")
-	public ResponseEntity<Object> withdrawTransaction(@RequestBody Map<String,Object> withdrawDetails) {
+	@PostMapping("/withdraw/{cid}")
+	public ResponseEntity<Object> withdrawTransaction(@RequestBody Map<String,Object> withdrawDetails, @PathVariable("cid")long cid) {
 		double amount = (double) withdrawDetails.get("amount");
 		int accountNumber = (int) withdrawDetails.get("accountNumber");
 		
@@ -83,6 +91,13 @@ public class AccountController {
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
 		
+		if(accountService.findAccountByAccountNumber(accountNumber).getCustomerID().getCustomerID()!=cid) {
+			responseText = "Account cannot be accessed by "+cid+". Not the owner.";
+			httpresult=HttpStatus.OK;
+			result.put("obj", 0);
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
 		int res= accountService.withdrawFromAccount(amount, accountNumber);
 		if(res==999) {
 			responseText = "Account is Disabled";
@@ -111,14 +126,21 @@ public class AccountController {
 		result.put("responseText", responseText);
 		return new ResponseEntity<>(result, httpresult);
 	}
-	@PostMapping("/deposit")
-	public ResponseEntity<Object> depositTransaction(@RequestBody Map<String,Object> depositDetails) {
+	@PostMapping("/deposit/{cid}")
+	public ResponseEntity<Object> depositTransaction(@RequestBody Map<String,Object> depositDetails, @PathVariable("cid")long cid) {
 		double amount = (double) depositDetails.get("amount");
 		int accountNumber = (int) depositDetails.get("accountNumber");
 		
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
+		if(accountService.findAccountByAccountNumber(accountNumber).getCustomerID().getCustomerID()!=cid) {
+			responseText = "Account cannot be accessed by "+cid+". Not the owner.";
+			httpresult=HttpStatus.OK;
+			result.put("obj", 0);
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
 		int res= accountService.depositIntoAccount(amount, accountNumber);
 		if(res==999) {
 			responseText = "Account is Disabled";
@@ -148,8 +170,8 @@ public class AccountController {
 		return new ResponseEntity<>(result, httpresult);
 	}
 	
-	@PostMapping("/fundtransfer")
-	public ResponseEntity<Object> findTransfer(@RequestBody Map<String,Object> transferDetails) {
+	@PostMapping("/fundtransfer/{cid}")
+	public ResponseEntity<Object> fundTransfer(@RequestBody Map<String,Object> transferDetails, @PathVariable("cid")long cid) {
 		double amount = (double) transferDetails.get("amount");
 //		double amount = Double.parseDouble(d) ;
 		int sourceAccountNumber = (int) transferDetails.get("sourceAccountNumber");
@@ -158,9 +180,23 @@ public class AccountController {
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
+		if(accountService.findAccountByAccountNumber(sourceAccountNumber).getCustomerID().getCustomerID()!=cid) {
+			responseText = "Source Account cannot be accessed by "+cid+". Not the owner.";
+			httpresult=HttpStatus.OK;
+			result.put("obj", 0);
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
+		if(accountService.findAccountByAccountNumber(receiverAccountNumber).isActiveStatus()==false) {
+			responseText = "Transaction Failed, receiver account is inactive!";
+			httpresult=HttpStatus.OK;
+			result.put("obj", 0);
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
 		int res= accountService.fundTransfer(amount, sourceAccountNumber, receiverAccountNumber);
 		if(res==999) {
-			responseText = "Source Account is Disabled";
+			responseText = "Source Account is Disabled, Transaction Failed";
 			httpresult=HttpStatus.OK;
 		}
 		else if (res==0) {
@@ -176,11 +212,23 @@ public class AccountController {
 			t.setReceiverAccountNumber(accountService.findAccountByAccountNumber(receiverAccountNumber));
 			t.setSourceAccountNumber(accountService.findAccountByAccountNumber(sourceAccountNumber));
 			t.setTransactionAmount(amount);
-			t.setTransactionType("transfer");
+			t.setTransactionType("debit");
 			t.setTransactionDate(Date.valueOf(LocalDate.now()));
 			t.setTimestamp(ts);
 			
 			transactionService.saveTransaction(t);
+			
+
+			Transaction t1 = new Transaction();
+			t1.setReceiverAccountNumber(accountService.findAccountByAccountNumber(sourceAccountNumber));
+			t1.setSourceAccountNumber(accountService.findAccountByAccountNumber(receiverAccountNumber));
+			t1.setTransactionAmount(amount);
+			t1.setTransactionType("credit");
+			t1.setTransactionDate(Date.valueOf(LocalDate.now()));
+			t1.setTimestamp(ts);
+			
+			transactionService.saveTransaction(t1);		
+			
 		}
 		result.put("obj", res);
 		result.put("responseText", responseText);

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.onlinebankingsystem.springproject.exception.CustomerNotFoundException;
 import com.onlinebankingsystem.springproject.model.Account;
 import com.onlinebankingsystem.springproject.model.Customer;
 import com.onlinebankingsystem.springproject.service.CustomerService;
@@ -37,6 +38,9 @@ public class CustomerController {
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
+		if(customerService.findCustomerByCustomerID(cid)==null) {
+			throw new CustomerNotFoundException();
+		}
 		alist = customerService.findCustomerByCustomerID(cid).getAccounts();
 		responseText="accounts list by cid";
 		result.put("obj", alist);
@@ -91,8 +95,7 @@ public class CustomerController {
 		HashMap<String,Object> result = new HashMap<>();
 		Customer obj = customerService.findCustomerByEmail(emailID);
 		if(obj==null) {
-			responseText = "Customer Not Found";
-			httpresult = HttpStatus.NOT_FOUND;
+			throw new CustomerNotFoundException();
 		}
 		else if (!obj.getPassword().contentEquals(password)) {
 			responseText = "Incorrect Password";

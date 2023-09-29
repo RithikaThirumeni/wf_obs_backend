@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinebankingsystem.springproject.service.AccountService;
-import com.onlinebankingsystem.springproject.service.TransactionService;
+import com.onlinebankingsystem.springproject.service.CustomerService;
+import com.onlinebankingsystem.springproject.service.TransactionServiceImpl;
 import com.onlinebankingsystem.springproject.model.Transaction;
+import com.onlinebankingsystem.springproject.exception.CustomerNotFoundException;
 import com.onlinebankingsystem.springproject.model.Account;
 
 @RestController
@@ -27,10 +29,13 @@ import com.onlinebankingsystem.springproject.model.Account;
 @Validated
 public class TransactionController {
 	@Autowired
-	TransactionService transactionService;
+	TransactionServiceImpl transactionService;
 	
 	@Autowired
 	AccountService accountService;
+
+	@Autowired
+	CustomerService customerService;
 	
 	@GetMapping("/transactions/{srcaccno}")
 	public ResponseEntity<Object> displayTransactions(@PathVariable(value="srcaccno")Long srcaccno) {
@@ -53,11 +58,19 @@ public class TransactionController {
 	}
 	@GetMapping("/accountstatement/{sourceAccountNumber}/{startDate}/{endDate}")
 	public ResponseEntity<Object> accountStatement(@PathVariable(value="sourceAccountNumber")Long sourceAccountNumber,
-			@PathVariable(value="startDate")String startDate, @PathVariable(value="endDate")String endDate) {
+			@PathVariable(value="startDate")String startDate, @PathVariable(value="endDate")String endDate,
+			@PathVariable("cid")long cid) {
 		
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
+		if(accountService.findAccountByAccountNumber(sourceAccountNumber).getCustomerID().getCustomerID()!=cid) {
+			responseText = "Account cannot be accessed by "+cid+". Not the owner.";
+			httpresult=HttpStatus.OK;
+			result.put("obj", 0);
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);
+		}
 		Account sourceAccount = accountService.findAccountByAccountNumber(sourceAccountNumber);
 		if (sourceAccount==null) {
 			responseText = "Account Not Found";
@@ -65,24 +78,38 @@ public class TransactionController {
 			result.put("responseText", responseText);
 			return new ResponseEntity<>(result, httpresult);
 		}
+		if(Date.valueOf(startDate).after(Date.valueOf(endDate))) {
+			responseText = "Start Date must be before End Date";
+			result.put("obj", 0);
+			result.put("responseText", responseText);
+			return new ResponseEntity<>(result, httpresult);			
+		}
 		List<Transaction> translist = transactionService.findTransactionStatementByAccount(sourceAccount, Date.valueOf(startDate), Date.valueOf(endDate));
 		result.put("obj", translist);
 		responseText="sucessfully retrieved statement";
 		result.put("responseText", responseText);
 		return new ResponseEntity<>(result, httpresult);
 	}
-	@GetMapping("/accountsummary/{sourceAccountNumber}")
-	public ResponseEntity<Object> accountSummary(@PathVariable(value="sourceAccountNumber")Long sourceAccountNumber) {
+	@GetMapping("/accountsummary/{sourceAccountNumber}/{cid}")
+	public ResponseEntity<Object> accountSummary(@PathVariable(value="sourceAccountNumber")Long sourceAccountNumber, 
+			@PathVariable("cid")long cid) {
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
-		Account sourceAccount = accountService.findAccountByAccountNumber(sourceAccountNumber);
-		if (sourceAccount==null) {
-			responseText = "Account Not Found";
-			result.put("obj", null);			
+		if(accountService.findAccountByAccountNumber(sourceAccountNumber).getCustomerID().getCustomerID()!=cid) {
+			responseText = "Account cannot be accessed by "+cid+". Not the owner.";
+			httpresult=HttpStatus.OK;
+			result.put("obj", 0);
 			result.put("responseText", responseText);
 			return new ResponseEntity<>(result, httpresult);
 		}
+		Account sourceAccount = accountService.findAccountByAccountNumber(sourceAccountNumber);
+//		if (sourceAccount==null) {
+//			responseText = "Account Not Found";
+//			result.put("obj", null);			
+//			result.put("responseText", responseText);
+//			return new ResponseEntity<>(result, httpresult);
+//		}
 		List<Transaction> translist = transactionService.findTransactionSummaryByAccount(sourceAccount)
 				.stream().limit(5).collect(Collectors.toList());
 		result.put("obj", translist);
@@ -96,6 +123,9 @@ public class TransactionController {
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
 		HashMap<String,Object> result = new HashMap<>();
+		if(customerService.findCustomerByCustomerID(customerID)==null) {
+			throw new CustomerNotFoundException();
+		}
 		List<Transaction> translist = transactionService.findTransactionSummaryByCustomerID(customerID);
 //				.stream().limit(5).collect(Collectors.toList());
 				

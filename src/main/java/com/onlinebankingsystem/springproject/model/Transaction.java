@@ -28,7 +28,7 @@ public class Transaction {
 	private long transactionID;
 	
 	@Column(name="transactionType")
-	@Pattern(regexp="withdraw|deposit|transfer")
+	@Pattern(regexp="withdraw|deposit|credit|debit|transfer")
 	private String transactionType;
 	
 	@DecimalMin(value="0.0", inclusive=true)

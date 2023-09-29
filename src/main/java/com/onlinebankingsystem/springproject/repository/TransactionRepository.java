@@ -22,6 +22,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 			+ " order by transaction.timestamp DESC")
 	public List<Transaction> findLatestByAccountNumber(Account sourceAccountNumber);
 	
-	@Query("select t from Transaction t where t.sourceAccountNumber.customerID.customerID=?1")
+	@Query("select t from Transaction t where t.sourceAccountNumber.customerID.customerID=?1 order by t.timestamp DESC")
 	List<Transaction> findRecentTransactions(Long customerID);
 }
