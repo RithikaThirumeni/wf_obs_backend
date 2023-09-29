@@ -42,18 +42,10 @@ public class AdminServiceImpl implements AdminService{
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
     @Override
-	public ResponseEntity<Object> createAccountForUser(HashMap<String,Object> details) throws Exception {
+	public ResponseEntity<Object> createAccountForUser(Account a, Long cid) throws Exception {
     	Customer c = new Customer();
-    	int cid = (int) details.get("customerID");
-    	c=customerRepository.findByCustomerID((long)cid);
-    	Account a = new Account();
+    	c=customerRepository.findByCustomerID((cid));
     	a.setCustomerID(c);
-    	a.setAccountBalance((double)details.get("accountBalance"));
-    	a.setAccountType((String)details.get("accountType"));
-    	a.setActiveStatus(false);
-    	a.setCreditCardReq((boolean)details.get("creditCardReq"));
-    	a.setDebitCardReq((boolean)details.get("debitCardReq"));
-    	a.setOpenDate(Date.valueOf((String)details.get("openDate")));
     	accountRepository.save(a);
     	HashMap<String,Object> res = new HashMap<>();
     	res.put("obj", a);
