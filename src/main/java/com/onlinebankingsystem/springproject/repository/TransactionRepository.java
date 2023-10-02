@@ -15,7 +15,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 	public List<Transaction> findAllTransactionsBySourceAccountNumber(Account sourceAccountNumber);
 	
 	@Query("select transaction from Transaction transaction "
-			+ "where transaction.sourceAccountNumber=?1 AND transaction.transactionDate>=?2 AND transaction.transactionDate<=?3" )
+			+ "where transaction.sourceAccountNumber=?1 AND transaction.transactionDate>=?2 AND transaction.transactionDate<=?3"
+			+ " order by transaction.timestamp DESC" )
 	public List<Transaction> findTransactionByDate(Account sourceAccountNumber, Date startDate, Date endDate);
 	
 	@Query("select transaction from Transaction transaction where transaction.sourceAccountNumber=?1"
