@@ -84,8 +84,8 @@ public class AccountController {
 	
 	@PostMapping("/withdraw/{cid}")
 	public ResponseEntity<Object> withdrawTransaction(@RequestBody Map<String,Object> withdrawDetails, @PathVariable("cid")long cid) {
-		double amount = (double) withdrawDetails.get("amount");
-		int accountNumber = (int) withdrawDetails.get("accountNumber");
+		double amount = Double.parseDouble(withdrawDetails.get("amount").toString());
+		int accountNumber = Integer.parseInt( withdrawDetails.get("accountNumber").toString());
 		
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
@@ -128,8 +128,8 @@ public class AccountController {
 	}
 	@PostMapping("/deposit/{cid}")
 	public ResponseEntity<Object> depositTransaction(@RequestBody Map<String,Object> depositDetails, @PathVariable("cid")long cid) {
-		double amount = (double) depositDetails.get("amount");
-		int accountNumber = (int) depositDetails.get("accountNumber");
+		double amount = Double.parseDouble(depositDetails.get("amount").toString());
+		int accountNumber = Integer.parseInt( depositDetails.get("accountNumber").toString());
 		
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;
@@ -172,10 +172,9 @@ public class AccountController {
 	
 	@PostMapping("/fundtransfer/{cid}")
 	public ResponseEntity<Object> fundTransfer(@RequestBody Map<String,Object> transferDetails, @PathVariable("cid")long cid) {
-		double amount = (double) transferDetails.get("amount");
-//		double amount = Double.parseDouble(d) ;
-		int sourceAccountNumber = (int) transferDetails.get("sourceAccountNumber");
-		int receiverAccountNumber = (int) transferDetails.get("receiverAccountNumber");
+		double amount = Double.parseDouble(transferDetails.get("amount").toString());
+		int sourceAccountNumber = Integer.parseInt( transferDetails.get("sourceAccountNumber").toString());
+		int receiverAccountNumber = Integer.parseInt(transferDetails.get("receiverAccountNumber").toString());
 	
 		HttpStatus httpresult = HttpStatus.OK;
 		String responseText;

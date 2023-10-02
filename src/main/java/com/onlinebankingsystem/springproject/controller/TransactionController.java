@@ -56,7 +56,7 @@ public class TransactionController {
 		result.put("responseText", responseText);
 		return new ResponseEntity<>(result, httpresult);
 	}
-	@GetMapping("/accountstatement/{sourceAccountNumber}/{startDate}/{endDate}")
+	@GetMapping("/accountstatement/{sourceAccountNumber}/{startDate}/{endDate}/{cid}")
 	public ResponseEntity<Object> accountStatement(@PathVariable(value="sourceAccountNumber")Long sourceAccountNumber,
 			@PathVariable(value="startDate")String startDate, @PathVariable(value="endDate")String endDate,
 			@PathVariable("cid")long cid) {
