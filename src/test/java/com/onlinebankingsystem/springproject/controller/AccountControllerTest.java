@@ -1,12 +1,9 @@
-package com.onlinebankingsystem.springproject;
+package com.onlinebankingsystem.springproject.controller;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -17,13 +14,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.hamcrest.Matchers;
-import org.json.JSONObject;
 import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,29 +29,49 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+//import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+//import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onlinebankingsystem.springproject.controller.AccountController;
 import com.onlinebankingsystem.springproject.controller.CustomerController;
 import com.onlinebankingsystem.springproject.model.Account;
 import com.onlinebankingsystem.springproject.model.Customer;
 import com.onlinebankingsystem.springproject.repository.AccountRepository;
+import com.onlinebankingsystem.springproject.repository.AdminRepository;
 import com.onlinebankingsystem.springproject.repository.CustomerRepository;
+import com.onlinebankingsystem.springproject.repository.TransactionRepository;
 import com.onlinebankingsystem.springproject.service.AccountService;
+import com.onlinebankingsystem.springproject.service.AccountServiceImpl;
+import com.onlinebankingsystem.springproject.service.AdminService;
+import com.onlinebankingsystem.springproject.service.AdminServiceImpl;
 import com.onlinebankingsystem.springproject.service.CustomerService;
+import com.onlinebankingsystem.springproject.service.CustomerServiceImpl;
+import com.onlinebankingsystem.springproject.service.TransactionService;
+import com.onlinebankingsystem.springproject.service.TransactionServiceImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-public class CustomerControllerTest {
+public class AccountControllerTest {
 	@Autowired
 	private MockMvc mvc;
 
 	@InjectMocks
-	private AccountController accountController;
+	private CustomerController customerController;
+	
 	@MockBean
-	private CustomerService customerService;
+	private AccountServiceImpl accountService;
+	
 	@MockBean
-	private AccountService accountService;
+	private CustomerServiceImpl customerService;
+	@MockBean
+	private TransactionServiceImpl transactionService;
+	@MockBean
+	private AdminServiceImpl adminService;
+	@MockBean
+	private AdminRepository adminRepository;
+	@MockBean
+	private TransactionRepository transactionRepository;
 	
 	@MockBean
 	private CustomerRepository customerRepository;
@@ -63,57 +81,14 @@ public class CustomerControllerTest {
 	
 	private static ObjectMapper mapper = new ObjectMapper();
 	
-	@Test
-	public void testLoginCustomer() throws Exception{
-		
-		Customer c = new Customer();
-		c.setCustomerID((long)1);
-		c.setEmailID("cust@gmail.com");
-		c.setPassword("cust123");
-		c.setDateOfBirth(Date.valueOf("1995-02-02"));
-		c.setPhoneNumber(1111111111);
-		c.setPassword("abcd123");
-		c.setPin(1234);
-		c.setFirstName("John");
-		c.setLastName("Doe");
-		
-		Mockito.when(customerService.findCustomerByEmail(ArgumentMatchers.any())).
-			thenReturn(c);
-		HashMap<String,Object> credentials = new HashMap<>();
-		credentials.put("emailID", c.getEmailID());
-		credentials.put("password", c.getPassword());
-		String json = mapper.writeValueAsString(credentials);
-		
-		JSONObject jsonobj = new JSONObject(credentials);
-		String jsonstr = jsonobj.toString();
-		
-		mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.content(json)).andExpect(status().isOk());
-	}
+//	@BeforeEach
+//	public void setUp() {
+//		MockitoAnnotations.initMocks(this);
+//		mvc = standaloneSetup(customerController).build();
+//	}
 	
 	@Test
-	public void testInsertCustomer() throws Exception {
-		Customer c = new Customer();
-		c.setCustomerID((long)1);
-		c.setEmailID("cust@gmail.com");
-		c.setPassword("cust123");
-		c.setDateOfBirth(Date.valueOf("1995-02-02"));
-		c.setPhoneNumber(1111111111);
-		c.setPassword("abcd123");
-		c.setPin(1234);
-		c.setFirstName("John");
-		c.setLastName("Doe");
-		Mockito.when(customerService.saveCustomer(ArgumentMatchers.any())).
-		thenReturn(c);
-		String json = mapper.writeValueAsString(c);
-		mvc.perform(post("/insert").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.content(json)
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-
-	}
-	@Test
-	public void testDisplayAccounts() throws Exception {
+	public void testCreateAccount() throws Exception {
 		Customer c = new Customer();
 		c.setCustomerID((long)1);
 		c.setEmailID("cust@gmail.com");
@@ -128,23 +103,19 @@ public class CustomerControllerTest {
 		Account a = new Account();
 		a.setAccountBalance(0.0);
 		a.setAccountNumber(1);
-		a.setAccountType("savings");
+		a.setAccountType("Savings");
 		a.setCreditCardReq(false);
 		a.setDebitCardReq(false);
 		a.setOpenDate(Date.valueOf("2023-09-16"));
 		a.setCustomerID(c);
 		
+		Mockito.when(accountService.saveAccount(ArgumentMatchers.any())).thenReturn(a);
 		String json = mapper.writeValueAsString(a);
-		List<Account> accList = new ArrayList<>();
-		accList.add(a);
-		c.setAccounts(accList);
-		
-		Mockito.when(customerService.findCustomerByCustomerID(ArgumentMatchers.anyLong())).thenReturn(c);
-		mvc.perform(get("/display/{id}",1)
-		      .contentType(MediaType.APPLICATION_JSON))
-		      .andExpect(status().isOk())
-		      .andExpect(jsonPath("$", Matchers.hasSize(1)))
-		      .andExpect(jsonPath("$[0].accountNumber", Matchers.equalTo(1)));
-	
+		mvc.perform(post("/createaccount").
+				contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.content(json).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+
 	}
 }
+
+

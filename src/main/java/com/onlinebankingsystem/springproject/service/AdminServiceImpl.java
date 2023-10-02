@@ -23,7 +23,14 @@ import javax.validation.ValidationException;
 @Service
 public class AdminServiceImpl implements AdminService{
 
-    @Autowired
+    public AdminServiceImpl(AdminRepository adminRepository, CustomerRepository customerRepository,
+			AccountRepository accountRepository) {
+		super();
+		this.adminRepository = adminRepository;
+		this.customerRepository = customerRepository;
+		this.accountRepository = accountRepository;
+	}
+	@Autowired
     AdminRepository adminRepository;
 
     @Autowired

@@ -26,7 +26,6 @@ import com.onlinebankingsystem.springproject.service.CustomerService;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-@Validated
 public class CustomerController {
 	@Autowired
 	CustomerService customerService;
